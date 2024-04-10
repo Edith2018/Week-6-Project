@@ -1,0 +1,88 @@
+---
+title: "Quarto Assignment"
+author: "Edith Namuleme"
+format: html
+execute: 
+  echo: false
+  output: true
+  message: false
+  warning: false
+---
+
+## Introduction
+
+This report examines **child-care** data across various states of the *United States of America*. The dataset spans from **2008 to 2018** and contains several variables that can provide insights into child care. Some of the key variables include:
+
+1. Study year
+1. Poverty rates for families
+1. Poverty rates for individuals 
+1. Median Income, to mention but a few
+
+
+I will engage in some **data wrangling** and generate a single *visualization* for this assignment.
+
+
+```{r}
+#Loading Packages
+library(tidyverse)
+library(ggplot2)
+library(scales)
+library(here)
+
+#Importing data
+Child_Care<-read_csv("childcare_infants.csv")
+here("Week 3 project/childcare_infants.csv")
+
+```
+
+
+```{r}
+#Grouping by study year
+pov_fam <- Child_Care |> 
+  group_by(study_year) |> 
+  summarise(avg_pov_fam = mean(poverty_families))
+
+#creating a new variable with one decimal point
+pov_fam_v2 <- pov_fam |> 
+  mutate(aveg_pov_fam_one_digit = number(avg_pov_fam, accuracy=0.1))
+```
+
+## Results
+
+```{r}
+#| echo: false
+
+#Data Visualization
+
+ggplot(data = pov_fam_v2,
+       mapping = aes(x = study_year,
+                     y = avg_pov_fam,
+                     fill = avg_pov_fam,
+                     label = aveg_pov_fam_one_digit)) +
+  labs(title = "Plot showing average poverty rates for families from 2008 to 2018",
+       x = NULL,
+       y = NULL,)+
+  geom_col() +
+  geom_label(vjust = 1,
+             color = "red",
+             fill = "white") +
+  theme_minimal() +
+  scale_fill_viridis_c() +
+  scale_x_continuous(breaks = c(2008,2009,2010,2011,2012,2013,2014,2015,2016,2017,2018))+
+  theme(legend.position = "none")
+
+
+```
+
+## Conclusion
+From the plot above, we can observe that the **average poverty rates for families** remain consistently *above 11* across the years. Between **2013 and 2015**, the rates remained relatively stable, consistently *above 12*. Notably, *2018* recorded the lowest poverty rates for families. Overall, the rates show minimal variation across the years, as depicted in the plot. 
+
+**NOTE:** I will further explore the data to create additional visualizations.
+
+The `echo: false` option disables the printing of code (only output is displayed).
+
+#Question
+Is it possible to create text that is both bold and in italics?
+
+#setwd("C:/Users/HP/Desktop/R 4 3 months/Week 3 project")
+Warning: The working directory was changed to C:/Users/HP/Desktop/R 4 3 months/Week 3 project inside a notebook chunk. The working directory will be reset when the chunk is finished running. Use the knitr root.dir option in the setup chunk to change the working directory for notebook chunks.> getwd()
